@@ -1,15 +1,36 @@
-# flutter_undo
+# Flutter Undo
 
-A new flutter plugin project.
+This package provides a mechanism to interact with `UndoManager` on iOS.
 
 ## Getting Started
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+The easiest way to use the plugin is to wrap a text editing widget in the `UndoableTextElement` widget:
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```dart
+UndoableTextElement(
+  controller: controller,
+  focusNode: focusNode,
+  child: TextField(controller: controller, focusNode: focusNode),
+);
+```
 
+For more control, you can interact with the `UndoManager` directly:
+
+```dart
+// Register a command
+UndoManager.instance.registerCommand(
+  UndoCommand(
+    undo: (identifier) {
+      widget.controller.value = lastValue;
+    },
+    redo: (identifier) {
+      widget.controller.value = currentValue;
+    },
+  ),
+);
+```
+
+```dart
+// Clear the undo stack
+UndoManager.instance.reset();
+```

@@ -5,6 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
 
+/// Handles communication with the iOS native `UndoManager`
+///
+/// Register instances of [UndoCommand] in order to preform undo/redo operations
 class UndoManager {
   UndoManager._() {
     _channel = MethodChannel('flutter_undo');
@@ -12,6 +15,8 @@ class UndoManager {
   }
 
   static final UndoManager _instance = UndoManager._();
+
+  static UndoManager get instance => _instance;
 
   MethodChannel _channel;
 
@@ -39,12 +44,14 @@ class UndoManager {
     }
   }
 
+  /// Clear the `UndoManager` stack and the registered list of [UndoCommand] instances
   void reset() {
     Logger.root.finest('[UndoManager] clear');
     _commands.clear();
     if (defaultTargetPlatform == TargetPlatform.iOS) _channel.invokeMethod('UndoManagerPlugin.reset');
   }
 
+  /// Add an [UndoCommand] to the undo stack
   void registerCommand(UndoCommand command) {
     Logger.root.finest('[UndoManager] register ${command.identifier}');
     _commands[command.identifier] = command;
@@ -54,6 +61,7 @@ class UndoManager {
 
 typedef UndoCallback = void Function(String identifier);
 
+/// Handles the logic for [undo] and [redo]
 class UndoCommand {
   UndoCommand({
     @required this.undo,
@@ -73,6 +81,7 @@ class UndoCommand {
   void performRedo() => redo(identifier);
 }
 
+/// A higher level component to wrap a [TextField] or other editable text element to automatically manage undo logic
 class UndoableTextElement extends StatefulWidget {
   UndoableTextElement({
     Key key,
@@ -81,8 +90,13 @@ class UndoableTextElement extends StatefulWidget {
     @required this.child,
   }) : super(key: key);
 
+  /// The child of this widget, typically some kind of editable text element like a [TextField]
   final Widget child;
+
+  /// Listen for changes in the [TextEditingValue]
   final TextEditingController controller;
+
+  /// Changes to the [controller]'s [TextEditingValue] while the [focusNode] does not have focus will be ignored
   final FocusNode focusNode;
 
   @override
