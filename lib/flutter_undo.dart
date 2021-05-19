@@ -128,7 +128,7 @@ class _UndoableTextElementState extends State<UndoableTextElement> {
   }
 
   void _onValueChanged() {
-    Logger.root.finest('[UndoableTextElement] _onValueChanged: ${widget.controller.value} ($_lastValue)');
+    Logger.root.finest('[UndoableTextElement] _onValueChanged');
     if (!widget.focusNode.hasPrimaryFocus) {
       Logger.root.finest('[UndoableTextElement] _onValueChanged does not have focus; ignoring');
       return;
@@ -142,7 +142,7 @@ class _UndoableTextElementState extends State<UndoableTextElement> {
       Logger.root.finest('[UndoableTextElement] text is unchanged; ignoring');
       return;
     }
-    Logger.root.finest('[UndoableTextElement] text changed from "${_lastValue.text}" to "${widget.controller.value.text}"');
+    Logger.root.finest('[UndoableTextElement] text changed');
     final currentValue = widget.controller.value.copyWith();
     final lastValue = this._lastValue.copyWith();
     UndoManager._instance.registerCommand(
