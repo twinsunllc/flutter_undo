@@ -1,6 +1,6 @@
 name: flutter_undo
 description: This package provides a mechanism to interact with UndoManager on iOS
-version: 0.0.1
+version: 0.0.2
 publisher: twinsun.dev
 homepage: https://github.com/twinsunllc/flutter_undo
 
