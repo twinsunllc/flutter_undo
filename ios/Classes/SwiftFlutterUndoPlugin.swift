@@ -15,10 +15,10 @@ public class SwiftFlutterUndoPlugin: NSObject, FlutterPlugin {
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-    if ("UndoManagerPlugin.register" == call.method) {
-      self.registerUndo(call.arguments as! String, type: "undo")
+    if call.method == "UndoManagerPlugin.register" {
+      registerUndo(call.arguments as! String, type: "undo")
       result(nil)
-    } else if ("UndoManagerPlugin.reset" == call.method) {
+    } else if call.method == "UndoManagerPlugin.reset" {
       if let controller = UIApplication.shared.keyWindow?.rootViewController as? FlutterViewController {
         controller.undoManager?.removeAllActions()
       }
@@ -39,6 +39,7 @@ public class SwiftFlutterUndoPlugin: NSObject, FlutterPlugin {
         selfTarget.channel.invokeMethod("UndoManager.\(type)", arguments: identifier)
       })
       controller.undoManager?.endUndoGrouping()
+      controller.undoManager?.groupsByEvent = true
     }
   }
 }
